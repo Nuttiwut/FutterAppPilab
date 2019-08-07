@@ -8,6 +8,9 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
 // explicit
 
+  final formKey = GlobalKey<FormState>();
+  String nameString, emailString, passwordString;
+
 // Method
 
   Widget nameText() {
@@ -24,6 +27,14 @@ class _RegisterState extends State<Register> {
         helperStyle: TextStyle(color: Colors.yellow[700]),
         hintText: 'English only',
       ),
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Please Fill Name in Blank';
+        }
+      },
+      onSaved: (String value) {
+        nameString = value;
+      },
     );
   }
 
@@ -42,6 +53,14 @@ class _RegisterState extends State<Register> {
         helperStyle: TextStyle(color: Colors.yellow[700]),
         hintText: 'you@email.com',
       ),
+      validator: (String value) {
+        if (!((value.contains('@')) && (value.contains('.')))) {
+          return 'Plase keep format E-mail';
+        }
+      },
+      onSaved: (String value) {
+        emailString = value;
+      },
     );
   }
 
@@ -59,17 +78,28 @@ class _RegisterState extends State<Register> {
         helperStyle: TextStyle(color: Colors.yellow[700]),
         hintText: 'More 6 charactor',
       ),
+      validator: (String value) {
+        if (value.length < 6) {
+          return 'Passsword more 6 charator';
+        }
+      },
+      onSaved: (String value) {
+        passwordString = value;
+      },
     );
   }
 
   Widget groupText() {
-    return ListView(
-      padding: EdgeInsets.only(top: 50.0, left: 50.0, right: 50.0),
-      children: <Widget>[
-        nameText(),
-        email(),
-        password(),
-      ],
+    return Form(
+      key: formKey,
+      child: ListView(
+        padding: EdgeInsets.only(top: 50.0, left: 50.0, right: 50.0),
+        children: <Widget>[
+          nameText(),
+          email(),
+          password(),
+        ],
+      ),
     );
   }
 
@@ -77,7 +107,13 @@ class _RegisterState extends State<Register> {
     return IconButton(
       tooltip: 'Register Firebase',
       icon: Icon(Icons.cloud_upload),
-      onPressed: () {},
+      onPressed: () {
+        if (formKey.currentState.validate()) {
+          formKey.currentState.save();
+          print('name = $nameString, E-mail = $emailString, Password = $passwordString');
+          
+        }
+      },
     );
   }
 
