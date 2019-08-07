@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tod_pilab/screens/authen.dart';
+import 'package:tod_pilab/screens/register.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -25,7 +27,11 @@ class _HomeState extends State<Home> {
           'Sign Up',
           style: TextStyle(color: myColor),
         ),
-        onPressed: () {},
+        onPressed: () {
+          var registerRoute =
+              MaterialPageRoute(builder: (BuildContext context) => Register());
+              Navigator.of(context).push(registerRoute);
+        },
       ),
     );
   }
@@ -42,7 +48,13 @@ class _HomeState extends State<Home> {
           'Sign IN',
           style: TextStyle(color: Colors.white),
         ),
-        onPressed: () {},
+        onPressed: () {
+          print('Click Sign In');
+
+          var authenRoute =
+              MaterialPageRoute(builder: (BuildContext context) => Authen());
+          Navigator.of(context).push(authenRoute);
+        },
       ),
     );
   }
