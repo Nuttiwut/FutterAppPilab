@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:tod_pilab/screens/authen.dart';
+import 'package:tod_pilab/screens/my_service.dart';
 import 'package:tod_pilab/screens/register.dart';
 
 class Home extends StatefulWidget {
@@ -14,6 +17,33 @@ class _HomeState extends State<Home> {
   Color myColor = Colors.orange[900];
 
   // Method
+
+  
+
+  @override
+  void initState(){
+    super.initState();
+    checkStatus();
+    print('Work');
+  }
+
+  Future<void> checkStatus()async{
+
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    FirebaseUser firebaseUser = await firebaseAuth.currentUser();
+
+    if (firebaseUser != null) {
+
+      print('SignIN');
+
+      var myServiceRoute = MaterialPageRoute(builder: (BuildContext context) => MyService());
+      Navigator.of(context).pushAndRemoveUntil(myServiceRoute, (Route<dynamic> route) => false);
+      
+    }else{
+      print('SignOut');
+    }
+
+  }
 
   Widget signUpButton() {
     return Container(

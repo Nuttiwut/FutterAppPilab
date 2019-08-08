@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tod_pilab/screens/my_service.dart';
 
 class Authen extends StatefulWidget {
   @override
@@ -6,13 +8,84 @@ class Authen extends StatefulWidget {
 }
 
 class _AuthenState extends State<Authen> {
+  // Explicit
+  final formKey = GlobalKey<FormState>();
+  String emailString = '', passordString = '';
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // Method
+  Widget emailText() {
+    return Container(
+      alignment: Alignment.center,
+      child: Container(
+        width: 200.0,
+        child: TextFormField(
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(labelText: 'E-mail'),
+          onSaved: (String value) {
+            emailString = value;
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget passwordText() {
+    return Container(
+      width: 200.0,
+      child: TextFormField(
+        obscureText: true,
+        decoration: InputDecoration(labelText: 'Password'),
+        onSaved: (String value) {
+          passordString = value;
+        },
+      ),
+    );
+  }
+
+  Future<void> checkAuthen() async {
+    await firebaseAuth
+        .signInWithEmailAndPassword(email: emailString, password: passordString)
+        .then((response) {
+      MaterialPageRoute materialPageRoute =
+          MaterialPageRoute(builder: (BuildContext context) => MyService());
+          Navigator.of(context).pushAndRemoveUntil(materialPageRoute, (Route<dynamic> route) => false);
+    }).catchError((response) {
+      String errorString = response.message;
+      mySnackBar(errorString);
+    });
+  }
+
+  void mySnackBar(String messageString) {
+    SnackBar snackBar = SnackBar(
+      content: Text(messageString),
+    );
+    scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text('Sing In'),
       ),
-      body: Text('Body'),
+      body: Form(
+        key: formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[emailText(), passwordText()],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.navigate_next),
+        onPressed: () {
+          formKey.currentState.save();
+          print('Email = $emailString, Password = $passordString');
+          checkAuthen();
+        },
+      ),
     );
   }
 }
